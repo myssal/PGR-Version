@@ -13,50 +13,42 @@
         "appId": "com.kurogame.punishing.grayraven.en",
         "platform": "standalone"
       },
-      "KR":
-      {
+      "KR": {
         "cdn": "http://prod-krcdn-volcdn.kurogame.net/prod",
-        "appId": "com.herogame.punishing.grayraven.kr",
+        "appId": "com.kurogame.punishing.grayraven.kr",
         "platform": "android"
       },
-      "KR_PC":
-      {
+      "KR_PC": {
         "cdn": "http://prod-krcdn-volcdn.kurogame.net/prod",
-        "appId": "com.herogame.pc.punishing.grayraven.kr",
+        "appId": "com.kurogame.punishing.grayraven.kr",
         "platform": "standalone"
       },
-      "JP":
-      {
+      "JP": {
         "cdn": "http://prod-jpcdn-volcdn.kurogame.net/prod",
-        "appId": "com.herogame.gplay.punishing.grayraven.jp",
+        "appId": "com.kurogame.punishing.grayraven.jp",
         "platform": "android"
       },
-      "JP_PC":
-      {
+      "JP_PC": {
         "cdn": "http://prod-jpcdn-volcdn.kurogame.net/prod",
-        "appId": "com.herogame.pc.punishing.grayraven.jp",
+        "appId": "com.kurogame.punishing.grayraven.jp",
         "platform": "standalone"
       },
-      "CN":
-      {
-        "cdn": "http://prod-zspnsalicdn.kurogame.com/prod",
+      "CN": {
+        "cdn": "http://prod-zspns-volccdn.kurogame.com/prod",
         "appId": "com.kurogame.haru.kuro",
         "platform": "android"
       },
-      "CN_PC":
-      {
-        "cdn": "http://prod-zspnsalicdn.kurogame.com/prod",
+      "CN_PC": {
+        "cdn": "http://prod-zspns-volccdn.kurogame.com/prod",
         "appId": "com.kurogame.haru.kuro",
         "platform": "standalone"
       },
-      "CN_BETA":
-      {
+      "CN_BETA": {
         "cdn": "http://pre-zspns-volccdn.kurogame.com/pre",
         "appId": "com.kurogame.haru.pioneer",
         "platform": "android"
       },
-      "CN_BETA_PC":
-      {
+      "CN_BETA_PC": {
         "cdn": "http://pre-zspns-volccdn.kurogame.com/pre",
         "appId": "com.kurogame.haru.pioneer",
         "platform": "standalone"
@@ -82,16 +74,17 @@
     {
       "EN": "R0bYNv1p0RHLXEEe",
       "CN": "Tk06VWjajcajO0Tz",      
-      "CN_BETA": "S4ugTkOGJBFMzaSz",
-      "JP": "",
-      "KR": ""
+      "CN_BETA": "S4ugTkOGJBFMzaSz"
     },
     "4.5.0": 
     {
       "CN_DEBUG": "zQDqBoAhDhB9FDBO",
       "CN_BETA": "gRw2GB79tP7tJ2D5",
       "EN": "1PULT16iP8RkFUfd",
-      "CN": "ARoYuSwJREjCQEvE"
+      "CN": "ARoYuSwJREjCQEvE",
+      "KR": "RR57jo2JbXqArZB7",
+      "JP": "O906GMbYwr46ajGd",
+      "TW": "PQQdKhfClWoBi3Iq"
     }
   },
   "signKey":
