@@ -25,6 +25,42 @@ interface Env {
 }
 
 export default {
+    async fetch(
+        request: Request,
+        env: Env,
+        ctx: ExecutionContext,
+    ): Promise<Response> {
+        const url = new URL(request.url);
+
+        if (url.pathname === "/test-discord") {
+            try {
+                const content = createDiscordContent(
+                    "TEST_REGION",
+                    {
+                        added: { "test_key": "test_value" },
+                        removed: {},
+                        changed: [],
+                    },
+                    env.DISCORD_ROLE_ID,
+                );
+
+                await sendDiscordWebhook(
+                    env.DISCORD_WEBHOOK_URL,
+                    content,
+                );
+
+                return new Response("Test message sent!");
+            } catch (error: any) {
+                return new Response(
+                    `Failed to send test message: ${error.message}`,
+                    { status: 500 },
+                );
+            }
+        }
+
+        return new Response("PGR CDN Monitor is running.");
+    },
+
     async scheduled(
         controller: ScheduledController,
         env: Env,
