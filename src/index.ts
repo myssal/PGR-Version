@@ -1,11 +1,19 @@
 import rawConfig from "./cdn/cdn.json";
+import rawLauncherConfig from "./cdn/launcher.json";
 
-import { CdnConfig, RegionConfig } from "./type";
+import {
+    CdnConfig,
+    RegionConfig,
+    LauncherConfig,
+    LauncherRegionConfig,
+} from "./type";
 import { compareConfigTabs } from "./cdn_diff";
+import { compareLauncherConfigs } from "./launcher_cdn_diff";
 import { hasDiff } from "./helper";
 import { createDiscordContent } from "./discord_message";
 
 const cdnConfig = rawConfig as CdnConfig;
+const launcherConfig = rawLauncherConfig as LauncherConfig;
 
 interface Env {
     CONFIG_KV: KVNamespace;
@@ -22,8 +30,124 @@ export default {
         );
 
         await processCdnConfigs(env);
+        await processLauncherConfigs(env);
     },
 } satisfies ExportedHandler<Env>;
+
+async function processLauncherConfigs(
+    env: Env,
+): Promise<void> {
+    for (const [region, regionConfig] of Object.entries(
+        launcherConfig,
+    )) {
+        try {
+            await processLauncherRegion(
+                env,
+                region,
+                regionConfig,
+            );
+        } catch (error) {
+            console.error(
+                `[Launcher:${region}] processing failed`,
+                error,
+            );
+        }
+    }
+}
+
+async function processLauncherRegion(
+    env: Env,
+    region: string,
+    regionConfig: LauncherRegionConfig,
+): Promise<void> {
+    const url = buildLauncherUrl(
+        regionConfig.cdn,
+        regionConfig.game_id,
+        regionConfig.iteration,
+    );
+
+    console.log(
+        `[Launcher:${region}] downloading config`,
+    );
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(
+            `download failed (${response.status})`,
+        );
+    }
+
+    const currentSnapshot =
+        await response.text();
+
+    const snapshotKey =
+        `snapshot:launcher:${region}`;
+
+    const previousSnapshot =
+        await env.CONFIG_KV.get(
+            snapshotKey,
+        );
+
+    if (!previousSnapshot) {
+        console.log(
+            `[Launcher:${region}] creating initial snapshot`,
+        );
+
+        await env.CONFIG_KV.put(
+            snapshotKey,
+            currentSnapshot,
+        );
+
+        return;
+    }
+
+    const diff = compareLauncherConfigs(
+        previousSnapshot,
+        currentSnapshot,
+    );
+
+    if (!hasDiff(diff)) {
+        console.log(
+            `[Launcher:${region}] no changes`,
+        );
+
+        return;
+    }
+
+    const content =
+        createDiscordContent(
+            `Launcher:${region}`,
+            diff,
+        );
+
+    console.log(content);
+
+    // await sendDiscordWebhook(content);
+
+    await env.CONFIG_KV.put(
+        snapshotKey,
+        currentSnapshot,
+    );
+
+    console.log(
+        `[Launcher:${region}] snapshot updated`,
+    );
+}
+
+function buildLauncherUrl(
+    cdn: string,
+    gameId: number,
+    iteration: string,
+): string {
+    return [
+        cdn.replace(/\/$/, ""),
+        "game",
+        `G${gameId}`,
+        iteration,
+        "index.json",
+    ].join("/");
+}
 
 async function processCdnConfigs(
     env: Env,
