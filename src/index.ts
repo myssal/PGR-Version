@@ -10,13 +10,18 @@ import {
 import { compareConfigTabs } from "./cdn_diff";
 import { compareLauncherConfigs } from "./launcher_cdn_diff";
 import { hasDiff } from "./helper";
-import { createDiscordContent } from "./discord_message";
+import {
+    createDiscordContent,
+    sendDiscordWebhook,
+} from "./discord_message";
 
 const cdnConfig = rawConfig as CdnConfig;
 const launcherConfig = rawLauncherConfig as LauncherConfig;
 
 interface Env {
     CONFIG_KV: KVNamespace;
+    DISCORD_WEBHOOK_URL: string;
+    DISCORD_ROLE_ID: string;
 }
 
 export default {
@@ -119,11 +124,15 @@ async function processLauncherRegion(
         createDiscordContent(
             `Launcher:${region}`,
             diff,
+            env.DISCORD_ROLE_ID,
         );
 
     console.log(content);
 
-    // await sendDiscordWebhook(content);
+    await sendDiscordWebhook(
+        env.DISCORD_WEBHOOK_URL,
+        content,
+    );
 
     await env.CONFIG_KV.put(
         snapshotKey,
@@ -263,11 +272,15 @@ async function processRegion(
         createDiscordContent(
             region,
             diff,
+            env.DISCORD_ROLE_ID,
         );
 
     console.log(content);
 
-    // await sendDiscordWebhook(content);
+    await sendDiscordWebhook(
+        env.DISCORD_WEBHOOK_URL,
+        content,
+    );
 
     await env.CONFIG_KV.put(
         snapshotKey,
