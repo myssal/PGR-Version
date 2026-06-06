@@ -1,40 +1,216 @@
-/**
- * Welcome to Cloudflare Workers!
- *
- * This is a template for a Scheduled Worker: a Worker that can run on a
- * configurable interval:
- * https://developers.cloudflare.com/workers/platform/triggers/cron-triggers/
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Run `curl "http://localhost:8787/__scheduled?cron=*+*+*+*+*"` to see your Worker in action
- * - Run `npm run deploy` to publish your Worker
- *
- * Bind resources to your Worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import rawConfig from "./cdn/cdn.json";
+
+import { CdnConfig, RegionConfig } from "./type";
+import { compareConfigTabs } from "./cdn_diff";
+import { hasDiff } from "./helper";
+import { createDiscordContent } from "./discord_message";
+
+const cdnConfig = rawConfig as CdnConfig;
+
+interface Env {
+    CONFIG_KV: KVNamespace;
+}
 
 export default {
-	async fetch(req) {
-		const url = new URL(req.url);
-		url.pathname = '/__scheduled';
-		url.searchParams.append('cron', '* * * * *');
-		return new Response(`To test the scheduled handler, ensure you have used the "--test-scheduled" then try running "curl ${url.href}".`);
-	},
+    async scheduled(
+        controller: ScheduledController,
+        env: Env,
+        ctx: ExecutionContext,
+    ): Promise<void> {
+        console.log(
+            `trigger fired at ${controller.cron}`,
+        );
 
-	// The scheduled handler is invoked at the interval set in our wrangler.jsonc's
-	// [[triggers]] configuration.
-	async scheduled(event, env, ctx): Promise<void> {
-		// A Cron Trigger can make requests to other endpoints on the Internet,
-		// publish to a Queue, query a D1 Database, and much more.
-		//
-		// We'll keep it simple and make an API call to a Cloudflare API:
-		let resp = await fetch('https://api.cloudflare.com/client/v4/ips');
-		let wasSuccessful = resp.ok ? 'success' : 'fail';
-
-		// You could store this result in KV, write to a D1 Database, or publish to a Queue.
-		// In this template, we'll just log the result:
-		console.log(`trigger fired at ${event.cron}: ${wasSuccessful}`);
-	},
+        await processCdnConfigs(env);
+    },
 } satisfies ExportedHandler<Env>;
+
+async function processCdnConfigs(
+    env: Env,
+): Promise<void> {
+    const latestVersion = getLatestVersion(
+        Object.keys(cdnConfig.token),
+    );
+
+    console.log(
+        `latest version: ${latestVersion}`,
+    );
+
+    const tokenMap: Record<string, string> =
+        cdnConfig.token[latestVersion] ?? {};
+
+    for (const [region, regionConfig] of Object.entries(
+        cdnConfig.cdnList,
+    )) {
+        const token =
+            tokenMap[region] ??
+            tokenMap[region.replace("_PC", "")];
+
+        if (!token) {
+            console.log(
+                `[${region}] no token found`,
+            );
+
+            continue;
+        }
+
+        try {
+            await processRegion(
+                env,
+                region,
+                regionConfig,
+                latestVersion,
+                token,
+            );
+        } catch (error) {
+            console.error(
+                `[${region}] processing failed`,
+                error,
+            );
+        }
+    }
+}
+
+async function processRegion(
+    env: Env,
+    region: string,
+    regionConfig: RegionConfig,
+    version: string,
+    token: string,
+): Promise<void> {
+    const url = buildConfigUrl(
+        regionConfig.cdn,
+        token,
+        regionConfig.appId,
+        version,
+        regionConfig.platform,
+    );
+
+    console.log(
+        `[${region}] downloading config`,
+    );
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(
+            `download failed (${response.status})`,
+        );
+    }
+
+    const currentSnapshot =
+        await response.text();
+
+    const snapshotKey =
+        `snapshot:${region}`;
+
+    const previousSnapshot =
+        await env.CONFIG_KV.get(
+            snapshotKey,
+        );
+
+    if (!previousSnapshot) {
+        console.log(
+            `[${region}] creating initial snapshot`,
+        );
+
+        await env.CONFIG_KV.put(
+            snapshotKey,
+            currentSnapshot,
+        );
+
+        return;
+    }
+
+    const diff = compareConfigTabs(
+        previousSnapshot,
+        currentSnapshot,
+    );
+
+    if (!hasDiff(diff)) {
+        console.log(
+            `[${region}] no changes`,
+        );
+
+        return;
+    }
+
+    const content =
+        createDiscordContent(
+            region,
+            diff,
+        );
+
+    console.log(content);
+
+    // await sendDiscordWebhook(content);
+
+    await env.CONFIG_KV.put(
+        snapshotKey,
+        currentSnapshot,
+    );
+
+    console.log(
+        `[${region}] snapshot updated`,
+    );
+}
+
+function buildConfigUrl(
+    cdn: string,
+    token: string,
+    appId: string,
+    version: string,
+    platform: string,
+): string {
+    return [
+        cdn.replace(/\/$/, ""),
+        "client",
+        "config",
+        token,
+        appId,
+        version,
+        platform,
+        "config.tab",
+    ].join("/");
+}
+
+function getLatestVersion(
+    versions: string[],
+): string {
+    return versions
+        .sort(compareVersions)
+        .at(-1)!;
+}
+
+function compareVersions(
+    a: string,
+    b: string,
+): number {
+    const aParts = a
+        .split(".")
+        .map(Number);
+
+    const bParts = b
+        .split(".")
+        .map(Number);
+
+    const maxLength = Math.max(
+        aParts.length,
+        bParts.length,
+    );
+
+    for (let i = 0; i < maxLength; i++) {
+        const aValue = aParts[i] ?? 0;
+        const bValue = bParts[i] ?? 0;
+
+        if (aValue > bValue) {
+            return 1;
+        }
+
+        if (aValue < bValue) {
+            return -1;
+        }
+    }
+
+    return 0;
+}

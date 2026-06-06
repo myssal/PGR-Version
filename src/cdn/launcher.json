@@ -1,0 +1,38 @@
+{
+  "EN_PC": {
+    "cdn": "https://prod-alicdn-gamestarter.kurogame.com/launcher/",
+    "game_id": 143,
+    "iteration": "50015_LWdk9D2Ep9mpJmqBZZkcPBU2YNraEWBQ",
+    "predownload": false
+  },
+  "KR_PC": {
+    "cdn": "https://prod-alicdn-gamestarter.kurogame.com/launcher/",
+    "game_id": 286,
+    "iteration": "50011_XefwDdpgPxxLABoTOD0yuqTFBC3koJZ0",
+    "predownload": false
+  },
+  "JP_PC": {
+    "cdn": "https://prod-alicdn-gamestarter.kurogame.com/launcher/",
+    "game_id": 282,
+    "iteration": "50007_NxWGZ0d254oWqZKuuL6szOK7WRLPt668",
+    "predownload": false
+  },
+  "TW_PC": {
+    "cdn": "https://prod-alicdn-gamestarter.kurogame.com/launcher/",
+    "game_id": 279,
+    "iteration": "50016_i2n5NLmdCAmOGP3J1tJOlWKNSMQuyWL7",
+    "predownload": false
+  },
+  "CN_PC": {
+    "cdn": "https://prod-cn-alicdn-gamestarter.kurogame.com/launcher/",
+    "game_id": 148,
+    "iteration": "10011_qYQv6TyyyhCKD3ox3gssyolNPwMoCPZt",
+    "predownload": false
+  },
+  "CN_PC_BETA": {
+    "cdn": "https://prod-cn-alicdn-gamestarter.kurogame.com/launcher/",
+    "game_id": 148,
+    "iteration": "10013_Gp9Gz1u9I5eyllXu64TfWhaPBQFXB449",
+    "predownload": false
+  }
+}

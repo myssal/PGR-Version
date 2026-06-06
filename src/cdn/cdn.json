@@ -1,0 +1,102 @@
+{
+  "cdnList":
+  {
+      "EN":
+      {
+        "cdn": "http://prod-encdn-volcdn.kurogame.net/prod",
+        "appId": "com.kurogame.punishing.grayraven.en",
+        "platform": "android"
+      },
+      "EN_PC":
+      {
+        "cdn": "http://prod-encdn-volcdn.kurogame.net/prod",
+        "appId": "com.kurogame.punishing.grayraven.en",
+        "platform": "standalone"
+      },
+      "KR":
+      {
+        "cdn": "http://prod-krcdn-volcdn.kurogame.net/prod",
+        "appId": "com.herogame.punishing.grayraven.kr",
+        "platform": "android"
+      },
+      "KR_PC":
+      {
+        "cdn": "http://prod-krcdn-volcdn.kurogame.net/prod",
+        "appId": "com.herogame.pc.punishing.grayraven.kr",
+        "platform": "standalone"
+      },
+      "JP":
+      {
+        "cdn": "http://prod-jpcdn-volcdn.kurogame.net/prod",
+        "appId": "com.herogame.gplay.punishing.grayraven.jp",
+        "platform": "android"
+      },
+      "JP_PC":
+      {
+        "cdn": "http://prod-jpcdn-volcdn.kurogame.net/prod",
+        "appId": "com.herogame.pc.punishing.grayraven.jp",
+        "platform": "standalone"
+      },
+      "CN":
+      {
+        "cdn": "http://prod-zspnsalicdn.kurogame.com/prod",
+        "appId": "com.kurogame.haru.kuro",
+        "platform": "android"
+      },
+      "CN_PC":
+      {
+        "cdn": "http://prod-zspnsalicdn.kurogame.com/prod",
+        "appId": "com.kurogame.haru.kuro",
+        "platform": "standalone"
+      },
+      "CN_BETA":
+      {
+        "cdn": "http://pre-zspns-volccdn.kurogame.com/pre",
+        "appId": "com.kurogame.haru.pioneer",
+        "platform": "android"
+      },
+      "CN_BETA_PC":
+      {
+        "cdn": "http://pre-zspns-volccdn.kurogame.com/pre",
+        "appId": "com.kurogame.haru.pioneer",
+        "platform": "standalone"
+      },
+      "CN_DEBUG":
+      {
+        "cdn": "http://pre-zspns-txcdn.kurogame.com/pre",
+        "appId": "com.kurogame.haru.internal.debug.cexs",
+        "platform": "standalone"
+      }
+  },
+  "token":
+  {
+    "4.3.0": 
+    {     
+      "EN": "VCAw4wx7IseFdBto",
+      "CN": "EGE2QCJHK7MoHFBn",
+      "CN_BETA": "0B6CFEBaFE9OyvUc",
+      "JP": "Wc9THPdziNGrTlL6",
+      "KR": "S9kc2n1DdQZx016f"
+    },
+    "4.4.0":
+    {
+      "EN": "R0bYNv1p0RHLXEEe",
+      "CN": "Tk06VWjajcajO0Tz",      
+      "CN_BETA": "S4ugTkOGJBFMzaSz",
+      "JP": "",
+      "KR": ""
+    },
+    "4.5.0": 
+    {
+      "CN_DEBUG": "zQDqBoAhDhB9FDBO",
+      "CN_BETA": "gRw2GB79tP7tJ2D5",
+      "EN": "1PULT16iP8RkFUfd",
+      "CN": "ARoYuSwJREjCQEvE"
+    }
+  },
+  "signKey":
+  {
+    "4.1.0": "VhZWYxNzIyZDg5ODY",
+    "4.3.0": "ts9F2kG8pR57Y7hJ3dK9xQ"
+  }
+}
