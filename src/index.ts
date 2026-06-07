@@ -197,29 +197,32 @@ function buildLauncherUrl(
 async function processCdnConfigs(
     env: Env,
 ): Promise<void> {
-    const latestVersion = getLatestVersion(
-        Object.keys(cdnConfig.token),
-    );
-
-    console.log(
-        `latest version: ${latestVersion}`,
-    );
-
-    const tokenMap: Record<string, string> =
-        cdnConfig.token[latestVersion] ?? {};
-
     for (const [region, regionConfig] of Object.entries(
         cdnConfig.cdnList,
     )) {
+        const baseRegion = region.replace("_PC", "");
+        const version =
+            cdnConfig.currentVersion[region] ??
+            cdnConfig.currentVersion[baseRegion];
+
+        if (!version) {
+            console.log(
+                `[${region}] no version configured`,
+            );
+            continue;
+        }
+
+        const tokenMap =
+            cdnConfig.token[version] ?? {};
+
         const token =
             tokenMap[region] ??
-            tokenMap[region.replace("_PC", "")];
+            tokenMap[baseRegion];
 
         if (!token) {
             console.log(
-                `[${region}] no token found`,
+                `[${region}] no token found for version ${version}`,
             );
-
             continue;
         }
 
@@ -228,7 +231,7 @@ async function processCdnConfigs(
                 env,
                 region,
                 regionConfig,
-                latestVersion,
+                version,
                 token,
             );
         } catch (error) {
@@ -345,45 +348,4 @@ function buildConfigUrl(
         platform,
         "config.tab",
     ].join("/");
-}
-
-function getLatestVersion(
-    versions: string[],
-): string {
-    return versions
-        .sort(compareVersions)
-        .at(-1)!;
-}
-
-function compareVersions(
-    a: string,
-    b: string,
-): number {
-    const aParts = a
-        .split(".")
-        .map(Number);
-
-    const bParts = b
-        .split(".")
-        .map(Number);
-
-    const maxLength = Math.max(
-        aParts.length,
-        bParts.length,
-    );
-
-    for (let i = 0; i < maxLength; i++) {
-        const aValue = aParts[i] ?? 0;
-        const bValue = bParts[i] ?? 0;
-
-        if (aValue > bValue) {
-            return 1;
-        }
-
-        if (aValue < bValue) {
-            return -1;
-        }
-    }
-
-    return 0;
 }

@@ -17,4 +17,5 @@ export interface CdnConfig {
     cdnList: Record<string, RegionConfig>;
     token: Record<string, Record<string, string>>;
     signKey: Record<string, string>;
+    currentVersion: Record<string, string>;
 }

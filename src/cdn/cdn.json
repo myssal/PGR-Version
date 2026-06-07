@@ -91,5 +91,14 @@
   {
     "4.1.0": "VhZWYxNzIyZDg5ODY",
     "4.3.0": "ts9F2kG8pR57Y7hJ3dK9xQ"
+  },
+  "currentVersion":
+  {
+    "EN": "4.5.0",
+    "CN": "4.5.0",
+    "CN_BETA": "4.6.0",
+    "JP": "4.5.0",
+    "KR": "4.5.0",
+    "TW": "4.5.0"
   }
 }
