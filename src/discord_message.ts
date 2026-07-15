@@ -1,5 +1,25 @@
 import { ParsedDiff } from "./helper";
 
+const DISCORD_CONTENT_LIMIT = 2000;
+
+function truncateDiscordContent(content: string): string {
+    if (content.length <= DISCORD_CONTENT_LIMIT) {
+        return content;
+    }
+
+    const suffix = "\n...\n```";
+
+    if (content.endsWith("```")) {
+        return (
+            content.slice(0, DISCORD_CONTENT_LIMIT - suffix.length - 3) +
+            "..." +
+            "\n```"
+        );
+    }
+
+    return content.slice(0, DISCORD_CONTENT_LIMIT - 3) + "...";
+}
+
 export function formatConfigDiff(
     region: string,
     diff: ParsedDiff,
@@ -75,7 +95,7 @@ export async function sendDiscordWebhook(
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            content,
+            content: truncateDiscordContent(content),
         }),
     });
 
