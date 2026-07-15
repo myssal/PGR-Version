@@ -88,7 +88,12 @@
     },
     "4.6.0": 
     {
-      "CN_BETA": "i7HMXohYyeAR7JFt"
+      "CN_BETA": "i7HMXohYyeAR7JFt",
+      "CN": "ix1uZwfria7PY7Nl",
+      "EN": "9jY3H6OqsppPLu31",
+	  "KR": "ACHtJkYzvDhCLV0x",
+      "JP": "cQxbPQ9qwgKgXz3o",
+      "TW": "xBuEcDQD3l5U19la"
     }
   },
   "signKey":
@@ -98,11 +103,11 @@
   },
   "currentVersion":
   {
-    "EN": "4.5.0",
-    "CN": "4.5.0",
-    "CN_BETA": "4.6.0",
-    "JP": "4.5.0",
-    "KR": "4.5.0",
-    "TW": "4.5.0"
+    "EN": "4.6.0",
+    "CN": "4.6.0",
+    "CN_BETA": "4.7.0",
+    "JP": "4.6.0",
+    "KR": "4.6.0",
+    "TW": "4.6.0"
   }
 }
